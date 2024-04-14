@@ -30,7 +30,7 @@ statement returns [Expr expr] :
     ;
 
 assignment returns [Expr expr] : 
-    ID '=' expression { $expr = new Assign($ID.text, $expression.expr); }
+    DATATYPE? ID '=' expression { $expr = new Assign($ID.text, $expression.expr); }
     ;
 
 expression returns [Expr expr] : 
@@ -88,7 +88,7 @@ argList returns [List<Expr> list] :
     
 paramList returns [List<String> list] :
     { $list = new ArrayList<String>(); } 
-   ID { $list.add($ID.text); } (',' ID { $list.add($ID.text); })* 
+    ID { $list.add($ID.text); } (',' ID { $list.add($ID.text); })* 
     ;
 
 printStatement returns [Expr expr] : 
@@ -98,9 +98,11 @@ printStatement returns [Expr expr] :
 value returns [Expr expr]: 
     STRING {$expr = new StringLiteral($STRING.text.substring(1, $STRING.text.length() - 1));}
     | NUMBER { $expr = new IntLiteral($NUMBER.text); }
+    | DOUBLE { $expr = new DoubleLiteral($DOUBLE.text); }
     | BOOLEAN { $expr = new BooleanLiteral($BOOLEAN.text); }
     |  ID { $expr = new Deref($ID.text); }
     ;
+
 arrayCreation returns [Expr expr]: 
 {  List<Expr> list = new ArrayList<Expr>();}
 LBRACK  (expression{list.add($expression.expr);} (',' expression{list.add($expression.expr);} )*)? RBRACK
@@ -114,12 +116,13 @@ arrayAccess returns [Expr expr]
   ;
   
   
-  
 LBRACK: '[' ;
 RBRACK: ']' ;
 BOOLEAN : 'true' | 'false';
 ID : [a-zA-Z][a-zA-Z_0-9]*;
 STRING : '"' (~["\\])* '"';
-NUMBER :  INT ('.' [0-9]+)? | INT;
+DATATYPE : ('float' | 'double');
+NUMBER : INT;
+DOUBLE: INT ('.' [0-9]+)?;
 fragment INT : '0' | [1-9] [0-9]*;
 WS : [ \t\n\r]+ -> skip;

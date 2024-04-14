@@ -18,6 +18,11 @@ class StringLiteral(val lexeme:String): Expr() {
     = StringData(lexeme)
 }
 
+class DoubleLiteral(val lexeme:String): Expr() {
+    override fun eval(runtime:Runtime): Data
+    = DoubleData(lexeme.toDouble())
+}
+
 enum class Operator {
     Add,
     Sub,
@@ -100,6 +105,9 @@ class Compare(
     override fun eval(runtime:Runtime): Data {
         val x = left.eval(runtime)
         val y = right.eval(runtime)
+        if(x is StringData && y is StringData) {
+            return BooleanData(x.value.equals(y.value))
+        }
         if(x is IntData && y is IntData) {
             return BooleanData(
                 when(comparator) {

@@ -11,6 +11,9 @@ class StringData(val value:String): Data() {
 class IntData(val value:Int): Data() {
     override fun toString(): String = "Int:$value"
 }
+class DoubleData(val value:Double): Data() {
+    override fun toString(): String = "Double:$value"
+}
 
 class FuncData(
     val name: String,

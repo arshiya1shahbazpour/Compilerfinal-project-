@@ -23,6 +23,11 @@ class DoubleLiteral(val lexeme:String): Expr() {
     = DoubleData(lexeme.toDouble())
 }
 
+class FloatLiteral(val lexeme:String): Expr() {
+    override fun eval(runtime:Runtime): Data
+    = FloatData(lexeme.toFloat())
+}
+
 enum class Operator {
     Add,
     Sub,
@@ -57,6 +62,9 @@ class Arithmetics(
                 if (x is IntData && y is IntData) {
                     return IntData(x.value + y.value)
                 }
+                if (x is FloatData && y is FloatData) {
+                    return FloatData(x.value + y.value)
+                }
             }
             Operator.Sub -> {
                 if (x is IntData && y is DoubleData) {
@@ -70,6 +78,9 @@ class Arithmetics(
                 }
                 if (x is IntData && y is IntData) {
                     return IntData(x.value - y.value)
+                }
+                if (x is FloatData && y is FloatData) {
+                    return FloatData(x.value - y.value)
                 }
             }
             Operator.Mul -> {
@@ -85,6 +96,9 @@ class Arithmetics(
                 if (x is IntData && y is IntData) {
                     return IntData(x.value * y.value)
                 }
+                if (x is FloatData && y is FloatData) {
+                    return FloatData(x.value * y.value)
+                }
             }
             Operator.Div -> {
                 if (x is IntData && y is DoubleData) {
@@ -99,6 +113,9 @@ class Arithmetics(
                 if (x is IntData && y is IntData) {
                     return IntData(x.value / y.value)
                 }
+                if (x is FloatData && y is FloatData) {
+                    return FloatData(x.value / y.value)
+                }
             }
         }
         return IntData(0)
@@ -108,7 +125,6 @@ class BooleanLiteral(val lexeme:String): Expr() {
     override fun eval(runtime:Runtime): Data
     = BooleanData(lexeme.equals("true"))
 }
-
 class Assign(val symbol:String, val expr:Expr): Expr() {
     override fun eval(runtime:Runtime): Data
     = expr.eval(runtime).apply {
@@ -290,11 +306,11 @@ class Print(val args: List<Expr>): Expr() {
         return None 
     }
 }
+
 class ArrayCreationExpr(val elements: List<Expr>): Expr() {
     override fun eval(runtime: Runtime): Data = 
         ArrayData(elements.map { it.eval(runtime) }.toMutableList())
 }
-
 
 class ArrayAccessExpr(val identifier: String, val index: Expr): Expr() {
     override fun eval(runtime: Runtime): Data {
@@ -319,4 +335,3 @@ class ArrayAccessExpr(val identifier: String, val index: Expr): Expr() {
             ?: throw RuntimeException("Array element at index $indexInt is null")
     }
 }
-

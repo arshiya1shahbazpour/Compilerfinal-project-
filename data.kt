@@ -14,6 +14,9 @@ class IntData(val value:Int): Data() {
 class DoubleData(val value:Double): Data() {
     override fun toString(): String = "Double:$value"
 }
+class FloatData(val value:Float): Data() {
+    override fun toString(): String = "Float:$value"
+}
 
 class FuncData(
     val name: String,

@@ -30,7 +30,7 @@ statement returns [Expr expr] :
     ;
 
 assignment returns [Expr expr] : 
-    DATATYPE? ID '=' expression { $expr = new Assign($ID.text, $expression.expr); }
+    ID '=' expression { $expr = new Assign($ID.text, $expression.expr); }
     ;
 
 expression returns [Expr expr] : 
@@ -99,6 +99,7 @@ value returns [Expr expr]:
     STRING {$expr = new StringLiteral($STRING.text.substring(1, $STRING.text.length() - 1));}
     | NUMBER { $expr = new IntLiteral($NUMBER.text); }
     | DOUBLE { $expr = new DoubleLiteral($DOUBLE.text); }
+    | FLOAT { $expr = new FloatLiteral($FLOAT.text); }
     | BOOLEAN { $expr = new BooleanLiteral($BOOLEAN.text); }
     |  ID { $expr = new Deref($ID.text); }
     ;
@@ -114,15 +115,14 @@ arrayAccess returns [Expr expr]
       $expr = new ArrayAccessExpr($identifier.text, $index.expr);
   }
   ;
-  
-  
+
 LBRACK: '[' ;
 RBRACK: ']' ;
 BOOLEAN : 'true' | 'false';
 ID : [a-zA-Z][a-zA-Z_0-9]*;
 STRING : '"' (~["\\])* '"';
-DATATYPE : ('float' | 'double');
 NUMBER : INT;
 DOUBLE: INT ('.' [0-9]+)?;
+FLOAT: DOUBLE'f';
 fragment INT : '0' | [1-9] [0-9]*;
 WS : [ \t\n\r]+ -> skip;

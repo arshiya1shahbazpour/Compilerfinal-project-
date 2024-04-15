@@ -37,27 +37,71 @@ class Arithmetics(
     override fun eval(runtime:Runtime): Data {
         val x = left.eval(runtime)
         val y = right.eval(runtime)
+        
+        
         if (op == Operator.Mul && x is StringData && y is IntData) {
             return StringData(x.value.repeat(y.value))
         }
-        if(x !is IntData || y !is IntData) {
-            throw Exception("cannot handle non-integer")
-        }
-        return IntData(
-            when(op) {
-                Operator.Add -> x.value + y.value
-                Operator.Sub -> x.value - y.value
-                Operator.Mul -> x.value * y.value
-                Operator.Div -> {
-                    if(y.value != 0) {
-                        x.value / y.value
-                    } else {
-                        throw Exception("cannot divide by zero")
-                    }
+        
+        when (op) {
+            Operator.Add -> {
+                if (x is IntData && y is DoubleData) {
+                    return DoubleData(x.value + y.value)
                 }
-                else -> throw Exception("Unknown operator")
+                if (x is DoubleData && y is IntData) {
+                    return DoubleData(x.value + y.value)
+                }
+                if (x is DoubleData && y is DoubleData) {
+                    return DoubleData(x.value + y.value)
+                }
+                if (x is IntData && y is IntData) {
+                    return IntData(x.value + y.value)
+                }
             }
-        )
+            Operator.Sub -> {
+                if (x is IntData && y is DoubleData) {
+                    return DoubleData(x.value - y.value)
+                }
+                if (x is DoubleData && y is IntData) {
+                    return DoubleData(x.value - y.value)
+                }
+                if (x is DoubleData && y is DoubleData) {
+                    return DoubleData(x.value - y.value)
+                }
+                if (x is IntData && y is IntData) {
+                    return IntData(x.value - y.value)
+                }
+            }
+            Operator.Mul -> {
+                if (x is IntData && y is DoubleData) {
+                    return DoubleData(x.value * y.value)
+                }
+                if (x is DoubleData && y is IntData) {
+                    return DoubleData(x.value * y.value)
+                }
+                if (x is DoubleData && y is DoubleData) {
+                    return DoubleData(x.value * y.value)
+                }
+                if (x is IntData && y is IntData) {
+                    return IntData(x.value * y.value)
+                }
+            }
+            Operator.Div -> {
+                if (x is IntData && y is DoubleData) {
+                    return DoubleData(x.value / y.value)
+                }
+                if (x is DoubleData && y is IntData) {
+                    return DoubleData(x.value / y.value)
+                }
+                if (x is DoubleData && y is DoubleData) {
+                    return DoubleData(x.value / y.value)
+                }
+                if (x is IntData && y is IntData) {
+                    return IntData(x.value / y.value)
+                }
+            }
+        }
+        return IntData(0)
     }
 }
 class BooleanLiteral(val lexeme:String): Expr() {
